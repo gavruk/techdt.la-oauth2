@@ -4,7 +4,6 @@
 var waterline=require('./config/waterline'),
   oauth2orize=require('./config/oauth2orize'),
   passport=require('./config/passport'),
-  //restify=require('./config/restify'),
   express=require('./config/express');
 
 waterline.initialize()

@@ -6,7 +6,7 @@ var express=require('express'),
   session = require('express-session'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  Promises=require('bluebird'),
+  Promise=require('bluebird'),
   controllersPath=require('path').join(__dirname,'../app/controllers');
 
 function initialize(options){
@@ -28,7 +28,7 @@ function initialize(options){
         var controller=require('../app/controllers/'+controllerName);
         promises.push(controller.initialize(options));
       });
-    Promises.all(promises)
+    Promise.all(promises)
       .then(function(){
         var server=app.listen(8081,function(){
           console.log('%s listening at http://%s:%s',app.locals.title,
