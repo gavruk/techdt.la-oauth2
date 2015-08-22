@@ -3,21 +3,17 @@
  */
 var Promise=require('bluebird'),
   oauth2orize=require('oauth2orize'),
-  crypto = require('crypto'),
   utils=require('../app/utils');
 
 function initialize(options){
   options=options || {};
   function initializePromise(resolve,reject){
 
-    // create OAuth 2.0 server
     var server = oauth2orize.createServer();
 
-    //(De-)Serialization for clients
     server.serializeClient(function(client, done) {
       return done(null, client.clientId);
     });
-
     server.deserializeClient(function(id, done) {
       options.collections.client.findOne({clientId: id})
         .then(function(client) {
@@ -28,15 +24,19 @@ function initialize(options){
         });
     });
 
-    //Implicit grant
     if(!options.collections || !options.collections.accesstoken){
       return reject(new Error('Could not find AccessToken ORM from config.'));
     }
+    //Implicit grant
     var token=oauth2orize.grant.token(function (client, user, ares, done) {
       var token = utils.uid(256);
       var expirationDate = new Date(new Date().getTime() + (3600 * 1000));
-
-      options.collections.accesstoken.create({token: token, expirationDate: expirationDate, userId: user.username, clientId: client.clientId})
+      options.collections.accesstoken.create({
+          token: token,
+          expirationDate: expirationDate,
+          userId: user.username,
+          clientId: client.clientId
+        })
         .then(function(accessToken) {
           return done(null, token, {expires_in: expirationDate.toISOString()});
         })
@@ -49,7 +49,9 @@ function initialize(options){
       var fakeRes={
         redirect:function(url){
           if(url.indexOf('access_token')>-1){
-            res.json({accessToken:url.substring(url.indexOf('access_token')+13,url.indexOf('&'))});
+            var start=url.indexOf('access_token')+13,
+              end=url.indexOf('&');
+            res.json({accessToken:url.substring(start,end)});
           }else{
             res.send(401,'Unauthorized');
           }
