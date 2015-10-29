@@ -7,7 +7,7 @@ function loadCollection(options){
     options.waterline.Collection.extend(
       {
         identity: 'accessToken',
-        connection: 'localhostMongo',
+        connection: 'mongo',
         attributes: {
           token:{type:'string',required:true},
           expirationDate:{type:'date',required:true},

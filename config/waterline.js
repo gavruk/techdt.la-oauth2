@@ -11,8 +11,13 @@ var Waterline=require('waterline'),
   config={
     adapters:{default:mongoAdapter,mongo:mongoAdapter},
     connections:{
-      localhostMongo:{
-        adapter: 'mongo',host: 'localhost',port: 27017,database: 'test'
+      mongo:{
+        adapter:'mongo',
+        host:'ds037234.mongolab.com',
+        port:37234,
+        user:'nthrows',
+        password:'nthrows',
+        database:'nthrows'
       }
     }
   },

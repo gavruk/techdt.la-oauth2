@@ -7,11 +7,12 @@ function loadCollection(options){
     options.waterline.Collection.extend(
       {
         identity: 'client',
-        connection: 'localhostMongo',
+        connection: 'mongo',
         attributes: {
           name:{type:'string',required:true},
           clientId:{type:'string',required:true},
-          clientSecret:{type:'string',required:true}
+          clientSecret:{type:'string',required:true},
+          redirectURI:[{type:'string',required:true}]
         }
       }
     )

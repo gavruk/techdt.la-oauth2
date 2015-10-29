@@ -2,6 +2,7 @@
  * Created by timfulmer on 7/4/15.
  */
 var Promise=require('bluebird'),
+  _=require('lodash'),
   collections=void 0,
   oauth2Server=void 0,
   passport=void 0;
@@ -9,13 +10,25 @@ var Promise=require('bluebird'),
 function authenticate(){
   return [
     passport.authenticate('userBasic',{session:false}),
+    function(req,res,done){
+      req.query=_.assign(req.query,req.body);
+      done();
+    },
     oauth2Server.authorization(function(clientId, redirectURI, done) {
       collections.client.findOne({clientId: clientId})
         .then(function(client) {
-          if(client.redirectURI!==redirectURI){
-            return done(new Error('Client redirect URI does not match the requested redirect URI.'));
+          var found=false;
+          client.redirectURI.some(function(uri){
+            if(uri===redirectURI){
+              found=true;
+              return true;
+            }
+            return false;
+          });
+          if(found){
+            return done(null, client, redirectURI);
           }
-          return done(null, client, redirectURI);
+          return done(new Error('Client redirect URI does not match the requested redirect URI.'));
         })
         .catch(function(err){
           return done(err);
