@@ -1,24 +1,10 @@
-/**
- * Created by timfulmer on 7/4/15.
- */
-function loadCollection(options){
-  options=options || {};
-  options.orm.loadCollection(
-    options.waterline.Collection.extend(
-      {
-        identity: 'client',
-        connection: 'mongo',
-        attributes: {
-          name:{type:'string',required:true},
-          clientId:{type:'string',required:true},
-          clientSecret:{type:'string',required:true},
-          redirectURI:[{type:'string',required:true}]
-        }
-      }
-    )
-  );
-}
+var mongoose = require('mongoose');
 
-module.exports={
-  loadCollection:loadCollection
-};
+var schema = new mongoose.Schema({
+  name: {type: String},
+  clientId: {type: String},
+  clientSecret: {type: String},
+  redirectURI: {type: Array}
+}, { collection: 'client' });
+
+module.exports = mongoose.model('client', schema);

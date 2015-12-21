@@ -1,16 +1,21 @@
-/**
- * Created by timfulmer on 7/4/15.
- */
-var waterline=require('./config/waterline'),
-  oauth2orize=require('./config/oauth2orize'),
-  passport=require('./config/passport'),
-  express=require('./config/express');
+var passport = require('passport');
+var express = require('express');
+var oauth2orize = require('oauth2orize');
 
-waterline.initialize()
-  .then(oauth2orize.initialize)
-  .then(passport.initialize)
-  .then(express.initialize)
-  .catch(function(err){
-    console.log('Caught error running server:\n%s.',err.stack);
-    process.exit(-1);
-  });
+var config = require('./config/config.js');
+
+var app = express();
+var oauthServer = oauth2orize.createServer();
+
+require('./config/passport.js')(passport);
+require('./config/express.js')(app);
+require('./config/oauth2orize.js')(oauthServer);
+
+require('./config/routes.js')(app, oauthServer);
+
+require('./config/mongoose.js')();
+
+
+var server = app.listen(config.port, function() {
+  console.log('%s listening at http://%s:%s', app.locals.title, server.address().address, server.address().port);
+});

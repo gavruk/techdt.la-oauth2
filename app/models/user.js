@@ -1,22 +1,8 @@
-/**
- * Created by timfulmer on 7/4/15.
- */
-function loadCollection(options){
-  options=options || {};
-  options.orm.loadCollection(
-    options.waterline.Collection.extend(
-      {
-        identity: 'user',
-        connection: 'mongo',
-        attributes: {
-          username:{type:'string',required:true},
-          password:{type:'string',required:true}
-        }
-      }
-    )
-  );
-}
+var mongoose = require('mongoose');
 
-module.exports={
-  loadCollection:loadCollection
-};
+var schema = new mongoose.Schema({
+  username: {type: String},
+  password: {type: String},
+}, { collection: 'user' });
+
+module.exports = mongoose.model('user', schema);
