@@ -22,12 +22,13 @@ module.exports = function(server) {
   var token = oauth2orize.grant.token(function (client, user, ares, done) {
     var token = utils.uid(256);
     var expirationDate = new Date(new Date().getTime() + (3600 * 1000));
-    AccessToken.create({
+    var accessToken = new AccessToken({
       token: token,
       expirationDate: expirationDate,
       userId: user.username,
       clientId: client.clientId
-    })
+    });
+    accessToken.save()
     .then(function(accessToken) {
       return done(null, token, {expires_in: expirationDate.toISOString()});
     })
