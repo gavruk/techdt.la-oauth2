@@ -1,11 +1,11 @@
-var clientCollection = require('../models/client.js');
+var Client = require('../models/client.js');
 
 var headClient = function(req, res) {
   return res.send(200);
 };
 
 var getClients = function(req, res, next) {
-  clientCollection.find({where: {}, sort: 'createdAt ASC'})
+  Client.find({})
   .then(function(clients) {
     return res.send(clients);
   })
@@ -16,7 +16,8 @@ var getClients = function(req, res, next) {
 };
 
 var postClient = function(req, res, next) {
-  clientCollection.create(req.body)
+  var client = new Client(req.body);
+  client.save()
   .then(function(client) {
     return res.send(client);
   })
